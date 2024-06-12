@@ -62,18 +62,26 @@ userSchema.post("save", async function (doc, next) {
   next();
 });
 // password deleted before send
-userSchema.set("toJSON", {
-  transform(doc, ret, options) {
-    delete ret.password;
-    return ret;
-  },
-});
-// password deleted before send
-userSchema.set("toObject", {
-  transform(doc, ret, options) {
-    delete ret.password;
-    return ret;
-  },
-});
+// userSchema.set("toJSON", {
+//   transform(doc, ret, options) {
+//     delete ret.password;
+//     return ret;
+//   },
+// });
+// // password deleted before send
+// userSchema.set("toObject", {
+//   transform(doc, ret, options) {
+//     delete ret.password;
+//     return ret;
+//   },
+// });
 
+// email chaking
+userSchema.pre("save", async function () {
+  const user = this;
+  const result = await User.findOne({ email: user?.email });
+  if (result) {
+    throw new Error("This Email already exists !");
+  }
+});
 export const User = model<TUser>("User", userSchema);

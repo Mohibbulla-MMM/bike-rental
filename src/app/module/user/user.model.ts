@@ -4,45 +4,50 @@ import { UserRole } from "./user.constant";
 import bcrypt from "bcrypt";
 import config from "../../config";
 
-const userSchema = new Schema<TUser>({
-  name: {
-    type: String,
-    trim: true,
-    minlength: 3,
-    maxlength: 20,
-    required: true,
+const userSchema = new Schema<TUser>(
+  {
+    name: {
+      type: String,
+      trim: true,
+      minlength: 3,
+      maxlength: 20,
+      required: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+      minlength: 3,
+      maxlength: 30,
+      required: true,
+    },
+    password: {
+      type: String,
+      trim: true,
+      minlength: 4,
+      maxlength: 20,
+      required: true,
+      select: 0,
+    },
+    phone: {
+      type: String,
+      trim: true,
+      minlength: 1,
+      maxlength: 20,
+      required: true,
+    },
+    address: {
+      type: String,
+      trim: true,
+      minlength: 3,
+      maxlength: 50,
+      required: true,
+    },
+    role: { type: String, enum: UserRole, required: true },
   },
-  email: {
-    type: String,
-    trim: true,
-    minlength: 3,
-    maxlength: 30,
-    required: true,
-  },
-  password: {
-    type: String,
-    trim: true,
-    minlength: 4,
-    maxlength: 20,
-    required: true,
-    select: 0,
-  },
-  phone: {
-    type: String,
-    trim: true,
-    minlength: 1,
-    maxlength: 20,
-    required: true,
-  },
-  address: {
-    type: String,
-    trim: true,
-    minlength: 3,
-    maxlength: 50,
-    required: true,
-  },
-  role: { type: String, enum: UserRole, required: true },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // password hash
 userSchema.pre("save", async function () {

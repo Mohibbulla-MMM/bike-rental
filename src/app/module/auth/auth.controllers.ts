@@ -1,19 +1,17 @@
 import { Request, Response } from "express";
 import { AuthService } from "./auth.services";
+import catchAsync from "../../utils/catchAsync";
+import sendResponse from "../../utils/sendResponse";
 
-const createUser = async (req: Request, res: Response) => {
-  try {
-    const result = await AuthService.createUser(req.body);
-    res.status(200).json({
-      status: true,
-      message: "User created success full",
-      data: result,
-    });
-    result;
-  } catch (err) {
-    console.log(err);
-  }
-};
+// user signup/create
+const createUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthService.createUser(req.body);
+
+  sendResponse(res, {
+    message: "User created success full",
+    data: result,
+  });
+});
 
 export const AuthControllers = {
   createUser,

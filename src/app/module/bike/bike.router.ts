@@ -14,4 +14,10 @@ router.post(
   BikeControllers.createBike
 );
 
+//  bike all get  (any user)
+router.get("/", BikeControllers.findAllBike);
+
+//  bike updated  (only admin)
+router.put("/:id", auth("admin"), BikeControllers.updatedBike);
+
 export const BikeRouter = router;

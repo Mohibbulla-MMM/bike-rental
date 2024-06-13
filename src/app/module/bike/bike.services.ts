@@ -22,8 +22,8 @@ const updatedBikeFromDB = async (id: string, payload: TBike) => {
   if (!bike) {
     throw new Error("Bike id is not valid");
   }
-  const result = await Bike.findByIdAndUpdate(id, payload, { new: true });
 
+  const result = await Bike.findByIdAndUpdate(id, payload, { new: true });
   return result;
 };
 

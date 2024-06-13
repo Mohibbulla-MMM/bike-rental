@@ -14,7 +14,7 @@ const auth = (...requiredRolles: TUserRole[]) => {
     }
 
     const decoded = jwt.verify(token, secretKye) as JwtPayload;
-    const { _id, email, role } = decoded;
+    const { _id, email, role, iat } = decoded;
 
     const user = await User.findById(_id);
     if (!user) {
@@ -24,8 +24,25 @@ const auth = (...requiredRolles: TUserRole[]) => {
     if (requiredRolles && !requiredRolles.includes(user?.role)) {
       throw new Error("You have no access to this route");
     }
-    console.log(requiredRolles && !requiredRolles.includes(user?.role));
-    console.log(requiredRolles);
+
+    if (requiredRolles && !requiredRolles.includes(role)) {
+      throw new Error("You have no access to this route");
+    }
+
+    const passwordChangeAt = user?.passwordChangeAt;
+    if (passwordChangeAt) {
+      const result = User.isJWTIssuedBeforePasswordChangeMethod(
+        passwordChangeAt,
+        iat as number
+      );
+      console.log({ result });
+      if (result) {
+        throw new Error("You are not Authorized! invalid token");
+      }
+    }
+
+    // console.log(requiredRolles && !requiredRolles.includes(user?.role));
+    // console.log(requiredRolles);
 
     next();
   });

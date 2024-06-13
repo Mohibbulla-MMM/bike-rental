@@ -39,7 +39,7 @@ const loginUser = async (payload: TUserLogin) => {
     config.jwt_access_expires_in as string
   );
 
-  console.log({ token });
+  // console.log({ token });
   return { token, data: user };
 };
 

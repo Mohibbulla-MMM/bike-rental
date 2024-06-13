@@ -14,10 +14,17 @@ export interface TUser {
 }
 
 export interface UserMehods extends Model<TUser> {
+  // passwrd match  method
   isPasswordMatchMethod(
     plainTextPassword: string,
     hashPassword: string
   ): Promise<boolean>;
+
+  // password issued before passwrd change method
+  isJWTIssuedBeforePasswordChangeMethod(
+    passwordChangeTimeStamp: Date,
+    jwtIssuedTimeStamp: number
+  ): boolean;
 }
 
 export type TUser_Role = keyof typeof USER_ROLE;

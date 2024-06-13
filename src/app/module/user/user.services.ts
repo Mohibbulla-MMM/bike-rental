@@ -5,7 +5,7 @@ import config from "../../config";
 const userGet = async (token: string) => {
   const accessKey = config.jwt_access_secret as string;
   const decoded = jwt.verify(token, accessKey);
-  console.log({ decoded });
+  // console.log({ decoded });
   return "result";
 };
 

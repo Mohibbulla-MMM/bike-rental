@@ -4,13 +4,15 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 
 const userGet = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserServices.userGet();
+  const result = await UserServices.userGet(req.headers.authorization as string);
+
+  // const headers = req.headers;
+  // console.log({ headers });
 
   sendResponse(res, {
-    message: "User get success !",
+    message: "User logged in successfully",
     data: result,
   });
-  
 });
 
 export const UserControllers = {

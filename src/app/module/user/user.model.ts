@@ -1,10 +1,10 @@
 import { Schema, model } from "mongoose";
-import { TUser } from "./user.interface";
+import { TUser, UserMehods } from "./user.interface";
 import { UserRole } from "./user.constant";
 import bcrypt from "bcrypt";
 import config from "../../config";
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserMehods>(
   {
     name: {
       type: String,
@@ -18,6 +18,7 @@ const userSchema = new Schema<TUser>(
       trim: true,
       minlength: 3,
       maxlength: 30,
+      unique: true,
       required: true,
     },
     password: {
@@ -34,6 +35,9 @@ const userSchema = new Schema<TUser>(
       minlength: 1,
       maxlength: 20,
       required: true,
+    },
+    passwordChangeAt: {
+      type: Date,
     },
     address: {
       type: String,
@@ -61,27 +65,22 @@ userSchema.post("save", async function (doc, next) {
   doc.password = "";
   next();
 });
-// password deleted before send
-// userSchema.set("toJSON", {
-//   transform(doc, ret, options) {
-//     delete ret.password;
-//     return ret;
-//   },
-// });
-// // password deleted before send
-// userSchema.set("toObject", {
-//   transform(doc, ret, options) {
-//     delete ret.password;
-//     return ret;
-//   },
-// });
 
 // email chaking
 userSchema.pre("save", async function () {
-  const user = this;
+  const user = this as TUser;
   const result = await User.findOne({ email: user?.email });
   if (result) {
     throw new Error("This Email already exists !");
   }
 });
-export const User = model<TUser>("User", userSchema);
+
+// user password match
+userSchema.statics.isPasswordMatchMethod = async function (
+  plainTextPassword: string,
+  hashPassword: string
+) {
+  const result = await bcrypt.compare(plainTextPassword, hashPassword);
+  return result;
+};
+export const User = model<TUser, UserMehods>("User", userSchema);

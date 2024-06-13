@@ -7,8 +7,7 @@ export type TUserLogin = {
 };
 
 export type TtokenPayload = {
-  email: string;
-  password: string;
   _id: Types.ObjectId;
+  email: string;
   role: TUserRole;
 };

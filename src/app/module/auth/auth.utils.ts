@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { TtokenPayload } from "./auth.interface";
 
-export const tokenCreate = (
+export const createToken = (
   payload: TtokenPayload,
   secretKey: string,
   expiresIn: string

@@ -1,3 +1,4 @@
+import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import { TUser } from "../user/user.interface";
 import { User } from "../user/user.model";
@@ -43,7 +44,44 @@ const loginUser = async (payload: TUserLogin) => {
   return { token, data: user };
 };
 
+// change password
+const changePassword = async (
+  userData: JwtPayload,
+  payload: { oldPassword: string; newPassword: string }
+) => {
+  console.log({ userData }, { payload });
+
+  const { _id, role, iat } = userData;
+
+  const user = await User.findById(_id);
+  if (!user) {
+    throw new Error("User not found !");
+  }
+
+  const passwordChangeAt = user?.passwordChangeAt;
+  if (passwordChangeAt) {
+    const result = User.isJWTIssuedBeforePasswordChangeMethod(
+      passwordChangeAt,
+      iat as number
+    );
+    // console.log({ result });
+    if (result) {
+      throw new Error("You are not Authorized! invalid token");
+    }
+  }
+
+  // password match
+  const passwordMatch = await User.isPasswordMatchMethod(
+    payload?.oldPassword,
+    user?.password
+  );
+  console.log({ passwordMatch });
+
+  return null;
+};
+
 export const AuthService = {
   createUser,
   loginUser,
+  changePassword,
 };

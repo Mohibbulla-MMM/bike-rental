@@ -43,7 +43,7 @@ const auth = (...requiredRolles: TUserRole[]) => {
 
     // console.log(requiredRolles && !requiredRolles.includes(user?.role));
     // console.log(requiredRolles);
-
+    req.user = decoded;
     next();
   });
 };

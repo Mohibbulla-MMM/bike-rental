@@ -16,8 +16,22 @@ const userGet = async (userData: JwtPayload) => {
 
 // get/find user by id
 const userUpdated = async (userData: JwtPayload, payload: Partial<TUser>) => {
-  
-  return;
+  // payload: Omit<TUser,  "passwordChangeAt">
+  const { _id, email } = userData;
+
+  delete payload?.password;
+  delete payload?.passwordChangeAt;
+
+  console.log("after", { payload });
+
+  const result = await User.findOne({ _id, email });
+  if (!result) {
+    throw new Error("User not found");
+  }
+  const userUpdated = await User.findOneAndUpdate({ _id, email }, payload, {
+    new: true,
+  });
+  return userUpdated;
 };
 
 export const UserServices = {

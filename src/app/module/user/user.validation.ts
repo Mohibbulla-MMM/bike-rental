@@ -30,7 +30,37 @@ const userSchema = z.object({
   }),
 });
 
+const userUpdatedSchema = z.object({
+  body: z.object({
+    name: z
+      .string()
+      .min(3, { message: "Name must be at least 3 characters long" })
+      .max(20, { message: "Name cannot be more than 20 characters long" })
+      .optional(),
+    email: z
+      .string()
+      .email({ message: "Invalid email address" })
+      .min(3, { message: "Email must be at least 3 characters long" })
+      .max(30, { message: "Email cannot be more than 30 characters long" })
+      .optional(),
+
+    phone: z
+      .string()
+      .min(1, { message: "Phone number must be at least 1 character long" })
+      .max(20, {
+        message: "Phone number cannot be more than 20 characters long",
+      })
+      .optional(),
+    address: z
+      .string()
+      .min(3, { message: "Address must be at least 3 characters long" })
+      .max(50, { message: "Address cannot be more than 50 characters long" })
+      .optional(),
+    role: z.enum(UserRole as [string]).optional(),
+  }),
+});
 
 export const userValidation = {
   userSchema,
+  userUpdatedSchema,
 };

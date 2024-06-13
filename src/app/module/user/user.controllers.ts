@@ -3,6 +3,7 @@ import { UserServices } from "./user.services";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
+import { TUser } from "./user.interface";
 
 const userGet = catchAsync(async (req: Request, res: Response) => {
   const userData = req.user as JwtPayload;
@@ -20,11 +21,13 @@ const userGet = catchAsync(async (req: Request, res: Response) => {
 // user updated
 const userUpdated = catchAsync(async (req: Request, res: Response) => {
   const userData = req.user as JwtPayload;
-  const payload = req.body;
-  if (!payload) {
+  const payload = req?.body;
+  // console.log({ payload });
+  if (Object.keys(payload).length === 0) {
     throw new Error("No data was found to update");
   }
-  const result = await UserServices.userUpdated(userData, req.body);
+  // payload: Omit<TUser,  "passwordChangeAt">
+  const result = await UserServices.userUpdated(userData, payload);
 
   sendResponse(res, {
     message: "Profile updated successfully",

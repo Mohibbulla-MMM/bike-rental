@@ -6,7 +6,9 @@ export type TBooking = {
   userId: Types.ObjectId;
   bikeId: Types.ObjectId;
   startTime: Date;
-  returnTime: TreturnTime;
-  totalCost: number;
-  isReturned: boolean;
+  returnTime?: TreturnTime;
+  totalCost?: number;
+  isReturned?: boolean;
 };
+
+export type TBookingPayload = { bikeId: Types.ObjectId; startTime: Date };

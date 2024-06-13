@@ -22,7 +22,7 @@ const bookingSchema = new Schema<TBooking>({
   },
   totalCost: {
     type: Number,
-    required: true,
+    default: 0,
   },
   isReturned: {
     type: Boolean,

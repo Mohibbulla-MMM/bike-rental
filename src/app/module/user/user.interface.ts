@@ -25,6 +25,9 @@ export interface UserMehods extends Model<TUser> {
     passwordChangeTimeStamp: Date,
     jwtIssuedTimeStamp: number
   ): boolean;
+
+
+
 }
 
 export type TUser_Role = keyof typeof USER_ROLE;

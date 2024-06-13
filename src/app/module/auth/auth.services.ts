@@ -49,11 +49,11 @@ const changePassword = async (
   userData: JwtPayload,
   payload: { oldPassword: string; newPassword: string }
 ) => {
-  console.log({ userData }, { payload });
+  // console.log({ userData }, { payload });
 
   const { _id, role, iat } = userData;
 
-  const user = await User.findById(_id);
+  const user = await User.findById(_id).select("+password");
   if (!user) {
     throw new Error("User not found !");
   }
@@ -71,11 +71,13 @@ const changePassword = async (
   }
 
   // password match
+  // console.log(payload?.oldPassword, user?.password);
+  console.log({ user });
   const passwordMatch = await User.isPasswordMatchMethod(
     payload?.oldPassword,
     user?.password
   );
-  console.log({ passwordMatch });
+  // console.log({ passwordMatch });
 
   return null;
 };

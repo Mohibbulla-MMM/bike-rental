@@ -11,6 +11,17 @@ const createBooking = catchAsync(async (req, res) => {
   });
 });
 
+// find all booking by user id
+const findAllBooking = catchAsync(async (req, res) => {
+  const result = await BookingServices.findAllBookingInToDB(req.user);
+
+  sendResponse(res, {
+    message: "Rentals retrieved successfully",
+    data: result,
+  });
+});
+
 export const BookingControllers = {
   createBooking,
+  findAllBooking,
 };

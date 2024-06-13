@@ -36,6 +36,21 @@ const createBookingInToDB = async (
   return result;
 };
 
+// find all booking by user id
+const findAllBookingInToDB = async (userData: JwtPayload) => {
+  const { _id, email, role } = userData;
+  const user = await User.findById(_id);
+  if (!user) {
+    throw new Error("User not found ");
+  }
+
+  const result = await Booking.find({ userId: _id });
+  if (result?.length === 0) {
+    throw new Error("You No Booking Bike");
+  }
+  return result;
+};
 export const BookingServices = {
   createBookingInToDB,
+  findAllBookingInToDB,
 };

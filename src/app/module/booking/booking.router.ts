@@ -6,12 +6,15 @@ import { BookingValidataion } from "./bookin.validation";
 
 const router = Router();
 
-//  user get
+//  bookie create (any login user)
 router.post(
   "/",
   auth("user", "admin"),
   validateRequest(BookingValidataion.bookingSchema),
   BookingControllers.createBooking
 );
+
+//  your booking get (any login user)
+router.get("/", auth("user", "admin"), BookingControllers.findAllBooking);
 
 export const BookingRouter = router;

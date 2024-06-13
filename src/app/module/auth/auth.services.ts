@@ -40,8 +40,11 @@ const loginUser = async (payload: TUserLogin) => {
     config.jwt_access_expires_in as string
   );
 
+  const userObj = user.toObject() as { password?: string };
+  delete userObj.password 
+
   // console.log({ token });
-  return { token, data: user };
+  return { token, data: userObj };
 };
 
 // change password
@@ -51,9 +54,9 @@ const changePassword = async (
 ) => {
   // console.log({ userData }, { payload });
 
-  const { _id, role, iat } = userData;
+  const { _id, email, iat } = userData;
 
-  const user = await User.findById(_id).select("+password");
+  const user = await User.isUserExistsByDBId(_id);
   if (!user) {
     throw new Error("User not found !");
   }
@@ -71,15 +74,37 @@ const changePassword = async (
   }
 
   // password match
-  // console.log(payload?.oldPassword, user?.password);
-  console.log({ user });
   const passwordMatch = await User.isPasswordMatchMethod(
     payload?.oldPassword,
     user?.password
   );
+  if (!passwordMatch) {
+    throw new Error("Wrong password !");
+  }
   // console.log({ passwordMatch });
+  const hashPassword = await User.newPasswordHashed(payload?.newPassword);
+  // console.log({ hashPassword });
 
-  return null;
+  const result = await User.findOneAndUpdate(
+    { _id, email },
+    {
+      password: hashPassword,
+      passwordChangeAt: new Date(),
+    },
+    {
+      // password:-1
+    }
+  );
+
+  const tokenPayload: TtokenPayload = {
+    _id,
+    email: user?.email,
+    role: user?.role,
+  };
+  const secretKye = config.jwt_access_secret as string;
+  const expiresIn = config.jwt_access_expires_in as string;
+  const token = createToken(tokenPayload, secretKye, expiresIn);
+  return { token };
 };
 
 export const AuthService = {

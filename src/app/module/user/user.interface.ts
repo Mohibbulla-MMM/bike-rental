@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { USER_ROLE } from "./user.constant";
 
 export type TUserRole = "admin" | "user";
@@ -26,8 +26,11 @@ export interface UserMehods extends Model<TUser> {
     jwtIssuedTimeStamp: number
   ): boolean;
 
+  // is user exists by mongodb _id by find
+  isUserExistsByDBId(id: Types.ObjectId): Promise<TUser>;
 
-
+  // new password hashed
+  newPasswordHashed(plainTextPassword: string): Promise<string>;
 }
 
 export type TUser_Role = keyof typeof USER_ROLE;

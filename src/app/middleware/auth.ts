@@ -14,9 +14,9 @@ const auth = (...requiredRolles: TUserRole[]) => {
     }
 
     const decoded = jwt.verify(token, secretKye) as JwtPayload;
-    const { _id, email, role, iat } = decoded;
+    const { _id, role, iat } = decoded;
 
-    const user = await User.findById(_id);
+    const user = await User.isUserExistsByDBId(_id);
     if (!user) {
       throw new Error("User not found !");
     }
@@ -35,7 +35,7 @@ const auth = (...requiredRolles: TUserRole[]) => {
         passwordChangeAt,
         iat as number
       );
-      console.log({ result });
+      // console.log({ result });
       if (result) {
         throw new Error("You are not Authorized! invalid token");
       }

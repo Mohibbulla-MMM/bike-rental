@@ -90,8 +90,21 @@ userSchema.statics.isJWTIssuedBeforePasswordChangeMethod = (
   jwtIssuedTimeStamp: number
 ) => {
   const passwordChangeTime = new Date(passwordChangeTimeStamp).getTime() / 1000;
-  console.log({ passwordChangeTime });
+  // console.log({ passwordChangeTime });
   const result = passwordChangeTime > jwtIssuedTimeStamp;
+  return result;
+};
+
+// user user exists by find _id
+userSchema.statics.isUserExistsByDBId = async (id: Schema.Types.ObjectId) => {
+  const result = await User.findById(id).select("+password");
+  return result;
+};
+
+//  user new password hashed
+userSchema.statics.newPasswordHashed = async (plainTextPassword: string) => {
+  const salt = Number(config.bcrypt_salt_round);
+  const result = await bcrypt.hash(plainTextPassword, salt);
   return result;
 };
 

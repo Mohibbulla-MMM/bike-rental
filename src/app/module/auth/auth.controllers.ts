@@ -19,7 +19,7 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const { data, token } = await AuthService.loginUser(req.body);
 
-  // res.cookie("accessToken", token);
+  // res.setHeader("accessToken", token);
   sendResponse(res, {
     message: "User logged in successfully",
     data: { token, data },
@@ -30,7 +30,8 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 const changePassword = catchAsync(async (req, res) => {
   const result = await AuthService.changePassword(req.user, req.body);
   sendResponse(res, {
-    message: "Password change successfully",
+    message:
+      "The password has been changed successfully. Please log in with the new password",
     data: result,
   });
 });

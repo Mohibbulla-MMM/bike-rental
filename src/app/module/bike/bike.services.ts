@@ -1,51 +1,51 @@
-import { Schema, model } from "mongoose";
+import { MongoExpiredSessionError } from "mongodb";
 import { TBike } from "./bike.interface";
+import { Bike } from "./bike.model";
 
-const bikeSchema = new Schema<TBike>(
-  {
-    name: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-    description: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-    pricePerHour: {
-      type: Number,
-      trim: true,
-      required: true,
-    },
-    isAvailable: {
-      type: Boolean,
-      default: true,
-    },
-    cc: {
-      type: Number,
-      trim: true,
-      required: true,
-    },
-    year: {
-      type: Number,
-      trim: true,
-      required: true,
-    },
-    model: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-    brand: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
+// create bike (admin)
+const createBikeInToDB = async (payload: TBike) => {
+  const result = await Bike.create(payload);
+  return result;
+};
+
+// get/find all bike (all user)
+const findAllBikeInToDB = async () => {
+  const result = await Bike.find();
+  if (result?.length === 0) {
+    throw new Error("No Data Found");
   }
-);
+  return result;
+};
+// updated bike (admin)
+const updatedBikeFromDB = async (id: string, payload: TBike) => {
+  const bike = await Bike.findById(id);
+  if (!bike) {
+    throw new Error("Bike id is not valid");
+  }
+  const result = await Bike.findByIdAndUpdate(id, payload, { new: true });
 
-export const Bike = model<TBike>("Bile", bikeSchema);
+  return result;
+};
+
+// delete bike (admin)
+const deletedBikeInToDB = async (id: string) => {
+  const bike = await Bike.findById(id);
+  if (!bike) {
+    throw new Error("Bike id is not valid");
+  }
+
+  const result = await Bike.findByIdAndUpdate(
+    id,
+    { isDeleted: true, isAvailable: false },
+    { new: true }
+  );
+
+  return result;
+};
+
+export const BikeServices = {
+  createBikeInToDB,
+  findAllBikeInToDB,
+  updatedBikeFromDB,
+  deletedBikeInToDB,
+};

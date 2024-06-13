@@ -25,6 +25,7 @@ const bikeSchema = z.object({
       .min(0, "Price per hour must be at least 0"),
 
     isAvailable: z.boolean().default(true),
+    isDeleted: z.boolean().default(false),
 
     cc: z
       .number({

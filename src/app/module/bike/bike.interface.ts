@@ -3,6 +3,7 @@ export type TBike = {
   description: string;
   pricePerHour: number;
   isAvailable?: boolean;
+  isDeleted?: boolean;
   cc: number;
   year: number;
   model: string;

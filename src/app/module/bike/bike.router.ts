@@ -20,4 +20,7 @@ router.get("/", BikeControllers.findAllBike);
 //  bike updated  (only admin)
 router.put("/:id", auth("admin"), BikeControllers.updatedBike);
 
+//  bike soft delete  (only admin)
+router.delete("/:id", auth("admin"), BikeControllers.deletedBike);
+
 export const BikeRouter = router;

@@ -16,6 +16,7 @@ const findAllBikeInToDB = async () => {
   }
   return result;
 };
+
 // updated bike (admin)
 const updatedBikeFromDB = async (id: string, payload: TBike) => {
   const bike = await Bike.findById(id);

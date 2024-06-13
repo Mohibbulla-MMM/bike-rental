@@ -52,4 +52,4 @@ const bikeSchema = new Schema<TBike>(
   }
 );
 
-export const Bike = model<TBike>("Bile", bikeSchema);
+export const Bike = model<TBike>("Bike", bikeSchema);

@@ -11,10 +11,12 @@ router.post(
   "/",
   auth("user", "admin"),
   validateRequest(BookingValidataion.bookingSchema),
-  BookingControllers.createBooking
+  BookingControllers.createRentals
 );
 
+router.put("/:id/return", auth("admin"), BookingControllers.updateReurnBike);
+
 //  your booking get (any login user)
-router.get("/", auth("user", "admin"), BookingControllers.findAllBooking);
+router.get("/", auth("user", "admin"), BookingControllers.findAllRentals);
 
 export const BookingRouter = router;

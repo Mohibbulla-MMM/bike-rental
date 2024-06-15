@@ -10,7 +10,7 @@ const router = Router();
 router.post(
   "/",
   auth("admin"),
-  validateRequest(BikeValidation.bikeSchema),
+  // validateRequest(BikeValidation.bikeSchema),
   BikeControllers.createBike
 );
 

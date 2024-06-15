@@ -10,7 +10,7 @@ const router = Router();
 router.post(
   "/",
   auth("user", "admin"),
-  validateRequest(BookingValidataion.bookingSchema),
+  // validateRequest(BookingValidataion.bookingSchema),
   BookingControllers.createRentals
 );
 

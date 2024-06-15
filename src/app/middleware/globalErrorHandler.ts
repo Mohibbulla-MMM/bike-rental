@@ -4,6 +4,8 @@ import config from "../config";
 import { ZodError } from "zod";
 import handleZodError from "../errors/handleZodError";
 import handleDuplicateError from "../errors/handleDuplicateError";
+import handleCastError from "../errors/handleCastError";
+import handleMongooseCastError from "../errors/handleCastError";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let message = err?.message || "Something went wrong";
@@ -20,13 +22,20 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     errorSource = simplifiedError?.errorSource;
     message = simplifiedError?.message;
-  } else if (err.errorResponse.code === 11000) {
+  } else if (err?.errorResponse?.code === 11000) {
     const simplifiedError = handleDuplicateError(err);
     statusCode = simplifiedError?.statusCode;
     errorSource = simplifiedError?.errorSource;
     message = simplifiedError?.message;
+  } 
+  else if (err?.name == "CastError") {
+    const simplifiedError = handleMongooseCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    errorSource = simplifiedError?.errorSource;
+    message = simplifiedError?.message;
   }
-
+  const x = err?.name;
+  console.log({ x });
   return res.status(statusCode).json({
     success: false,
     message: message,

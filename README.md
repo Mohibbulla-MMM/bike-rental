@@ -46,7 +46,6 @@ To set up the project locally, follow these steps:
    ```bash
    git clone https://github.com/Mohibbulla-MMM/l2-assignment-3.git
    cd bike-rental
-
    ```
 
 2. Install the required packages::
@@ -87,6 +86,14 @@ Currently, there are no specific deployment guidelines. You can deploy this proj
 ## Contact
 
 For any questions or support, you can contact me at: <i>rockychain1020@gmail.com</i>
+
+<hr />
+
+## Project Related link
+
+- [Project Live Server](https://bikerental-coffees-projects.vercel.app/)
+- [Project ER Diagram](https://lucid.app/lucidchart/413210ab-44ba-45ac-ba9b-9d5300c6f0fb/edit?viewport_loc=-5981%2C-2561%2C10907%2C4864%2C0_0&invitationId=inv_02fad337-b525-4810-bb10-4c70b2f50314)
+- [Project APIs Video](https://bikerental-coffees-projects.vercel.app/)
 
 <hr />
 Thank you for using the Bike Rental system. We hope it meets your needs and provides a smooth experience for renting bikes.

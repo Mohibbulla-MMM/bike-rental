@@ -1,0 +1,28 @@
+# Exported from Render on 2024-06-15T12:22:02Z
+services:
+- type: web
+  name: bike-rental
+  runtime: node
+  repo: https://github.com/Mohibbulla-MMM/bike-rental
+  plan: free
+  envVars:
+  - key: JWT_REFRESS_EXPIRES_IN
+    sync: false
+  - key: JWT_ACCESS_EXPIRES_IN
+    sync: false
+  - key: JWT_REFRESH_SECRET
+    sync: false
+  - key: JWT_ACCESS_SECRET
+    sync: false
+  - key: BCRYPT_SALT_ROUND
+    sync: false
+  - key: DB_URL
+    sync: false
+  - key: PORT
+    sync: false
+  - key: NODE_ENV
+    sync: false
+  region: virginia
+  buildCommand: yarn install
+  startCommand: node dist/server.js
+version: "1"

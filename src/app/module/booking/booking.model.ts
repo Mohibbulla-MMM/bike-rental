@@ -1,6 +1,8 @@
 import { Schema, model } from "mongoose";
 import { TBooking } from "./booking.interface";
 import { Bike } from "../bike/bike.model";
+import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 
 const bookingSchema = new Schema<TBooking>(
   {
@@ -44,7 +46,7 @@ bookingSchema.virtual("Total_cost_so_far_is_running").get(async function () {
     const booking: TBooking = this;
     const bike = await Bike.findById(booking?.bikeId);
     if (!bike) {
-      throw new Error("Bike not found !");
+      throw new AppError(httpStatus.NOT_FOUND,"Bike not found !");
     }
 
     // start and return time with totalCost calculation
@@ -58,7 +60,7 @@ bookingSchema.virtual("Total_cost_so_far_is_running").get(async function () {
     // return Number(totalCost);
   } catch (err: any) {
     console.log(err);
-    throw new Error(err);
+    throw new AppError(httpStatus.BAD_REQUEST,err);
   }
 });
 

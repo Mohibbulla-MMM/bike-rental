@@ -1,4 +1,6 @@
+import httpStatus from "http-status";
 import config from "../config";
+import AppError from "../errors/AppError";
 import { TUserRole } from "../module/user/user.interface";
 import { User } from "../module/user/user.model";
 import catchAsync from "../utils/catchAsync";
@@ -10,7 +12,11 @@ const auth = (...requiredRolles: TUserRole[]) => {
     const secretKye = config.jwt_access_secret as string;
 
     if (!token) {
-      throw new Error("You are not Authorized! -- Token ");
+      // AppError(httpStatus.UNAUTHORIZED, "You are not Authorized! -- Token ");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You are not Authorized! -- Token "
+      );
     }
 
     const decoded = jwt.verify(token, secretKye) as JwtPayload;
@@ -18,15 +24,21 @@ const auth = (...requiredRolles: TUserRole[]) => {
 
     const user = await User.isUserExistsByDBId(_id);
     if (!user) {
-      throw new Error("User not found !");
+      throw new AppError(httpStatus.NOT_FOUND, "User not found");
     }
 
     if (requiredRolles && !requiredRolles.includes(user?.role)) {
-      throw new Error("You have no access to this route");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You have no access to this route"
+      );
     }
 
     if (requiredRolles && !requiredRolles.includes(role)) {
-      throw new Error("You have no access to this route");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You have no access to this route"
+      );
     }
 
     const passwordChangeAt = user?.passwordChangeAt;
@@ -37,7 +49,10 @@ const auth = (...requiredRolles: TUserRole[]) => {
       );
       // console.log({ result });
       if (result) {
-        throw new Error("You are not Authorized! invalid token");
+        throw new AppError(
+          httpStatus.UNAUTHORIZED,
+          "You are not Authorized! (invalid token)"
+        );
       }
     }
 

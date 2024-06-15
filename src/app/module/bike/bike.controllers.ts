@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 
@@ -29,7 +31,7 @@ const updatedBike = catchAsync(async (req, res) => {
   const { id } = req.params;
   const payload = req.body;
   if (Object.keys(payload)?.length === 0) {
-    throw new Error("Updated Value empty");
+    throw new AppError(httpStatus.BAD_REQUEST,"Updated Value empty");
   }
   const result = await BikeServices.updatedBikeFromDB(id, payload);
   sendResponse(res, {

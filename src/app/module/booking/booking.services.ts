@@ -5,6 +5,8 @@ import { User } from "../user/user.model";
 import { Bike } from "../bike/bike.model";
 import { Booking } from "./booking.model";
 import { TBike } from "../bike/bike.interface";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 // create booking
 const createRentalsInToDB = async (
@@ -17,17 +19,17 @@ const createRentalsInToDB = async (
 
     const user = await User.findById(_id);
     if (!user) {
-      throw new Error("User not found ");
+      throw new AppError(httpStatus.NOT_FOUND, "User not found ");
     }
 
     const bike = await Bike.findById(bikeId);
     if (!bike) {
-      throw new Error("Bike not found ");
+      throw new AppError(httpStatus.NOT_FOUND, "Bike not found ");
     }
 
     const bikeIsAvailable = bike?.isAvailable;
     if (!bikeIsAvailable) {
-      throw new Error("This Bike is not available");
+      throw new AppError(httpStatus.BAD_REQUEST, "This Bike is not available");
     }
 
     const bookingData = {
@@ -45,7 +47,7 @@ const createRentalsInToDB = async (
     return result;
   } catch (err: any) {
     console.log(err);
-    throw new Error(err);
+    throw new AppError(httpStatus.BAD_REQUEST, err);
   }
 };
 
@@ -56,11 +58,11 @@ const updateReurnBikeFromDB = async (id: string) => {
     session.startTransaction();
     const booking = await Booking.findById(id).populate<TBike>("bikeId");
     if (!booking) {
-      throw new Error("Your Booking not found !");
+      throw new AppError(httpStatus.NOT_FOUND,"Your Booking not found !");
     }
     const isReturn = booking?.isReturned;
     if (isReturn) {
-      throw new Error(`This bike already retured !`);
+      throw new AppError(httpStatus.BAD_REQUEST, `This bike already retured !`);
     }
 
     const bikeId = booking?.bikeId?._id;
@@ -97,7 +99,7 @@ const updateReurnBikeFromDB = async (id: string) => {
     await session.abortTransaction();
     await session.endSession();
     console.log(err);
-    throw new Error(err);
+    throw new AppError(httpStatus.BAD_REQUEST, err);
   }
 };
 
@@ -106,12 +108,15 @@ const findAllRentalsInToDB = async (userData: JwtPayload) => {
   const { _id, email, role } = userData;
   const user = await User.findById(_id);
   if (!user) {
-    throw new Error("User not found ");
+    throw new AppError(httpStatus.NOT_FOUND,"User not found ");
   }
 
   const result = await Booking.find({ userId: _id });
   if (result?.length === 0) {
-    throw new Error("You have not made any bookings yet");
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You have not made any bookings yet"
+    );
   }
   return result;
 };

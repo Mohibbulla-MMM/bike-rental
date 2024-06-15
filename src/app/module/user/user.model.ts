@@ -3,6 +3,8 @@ import { TUser, UserMehods } from "./user.interface";
 import { UserRole } from "./user.constant";
 import bcrypt from "bcrypt";
 import config from "../../config";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 const userSchema = new Schema<TUser, UserMehods>(
   {
@@ -71,7 +73,7 @@ userSchema.pre("save", async function () {
   const user = this as TUser;
   const result = await User.findOne({ email: user?.email });
   if (result) {
-    throw new Error("This Email already exists !");
+    throw new AppError(httpStatus.BAD_REQUEST,"This Email already exists !");
   }
 });
 

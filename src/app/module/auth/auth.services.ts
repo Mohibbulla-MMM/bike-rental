@@ -4,6 +4,8 @@ import { TUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import { TUserLogin, TtokenPayload } from "./auth.interface";
 import { createToken } from "./auth.utils";
+import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 
 // create user
 const createUser = async (payload: TUser) => {
@@ -16,7 +18,7 @@ const loginUser = async (payload: TUserLogin) => {
   const { password, email } = payload;
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
 
   const hashPassword = user?.password;
@@ -26,7 +28,7 @@ const loginUser = async (payload: TUserLogin) => {
   );
   //   console.log({ isPasswordMathch });
   if (!isPasswordMathch) {
-    throw new Error("Wrong Password");
+    throw new AppError(httpStatus.BAD_REQUEST, "Wrong Password");
   }
   const tokenPayloadpayload: TtokenPayload = {
     _id: user._id,
@@ -41,7 +43,7 @@ const loginUser = async (payload: TUserLogin) => {
   );
 
   const userObj = user.toObject() as { password?: string };
-  delete userObj.password 
+  delete userObj.password;
 
   // console.log({ token });
   return { token, data: userObj };
@@ -58,7 +60,7 @@ const changePassword = async (
 
   const user = await User.isUserExistsByDBId(_id);
   if (!user) {
-    throw new Error("User not found !");
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
 
   const passwordChangeAt = user?.passwordChangeAt;
@@ -69,7 +71,10 @@ const changePassword = async (
     );
     // console.log({ result });
     if (result) {
-      throw new Error("You are not Authorized! invalid token");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You are not Authorized! (invalid token)."
+      );
     }
   }
 
@@ -79,7 +84,7 @@ const changePassword = async (
     user?.password
   );
   if (!passwordMatch) {
-    throw new Error("Wrong password !");
+    throw new AppError(httpStatus.BAD_REQUEST, "Wrong password !");
   }
   // console.log({ passwordMatch });
   const hashPassword = await User.newPasswordHashed(payload?.newPassword);

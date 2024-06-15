@@ -4,6 +4,8 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
 import { TUser } from "./user.interface";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 const userGet = catchAsync(async (req: Request, res: Response) => {
   const userData = req.user as JwtPayload;
@@ -24,7 +26,7 @@ const userUpdated = catchAsync(async (req: Request, res: Response) => {
   const payload = req?.body;
   // console.log({ payload });
   if (Object.keys(payload).length === 0) {
-    throw new Error("No data was found to update");
+    throw new AppError(httpStatus.BAD_REQUEST, "No data was found to update");
   }
   // payload: Omit<TUser,  "passwordChangeAt">
   const result = await UserServices.userUpdated(userData, payload);

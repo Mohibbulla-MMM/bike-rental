@@ -1,6 +1,8 @@
 import { MongoExpiredSessionError } from "mongodb";
 import { TBike } from "./bike.interface";
 import { Bike } from "./bike.model";
+import httpStatus from "http-status";
+import AppError from "../../errors/AppError";
 
 // create bike (admin)
 const createBikeInToDB = async (payload: TBike) => {
@@ -12,7 +14,7 @@ const createBikeInToDB = async (payload: TBike) => {
 const findAllBikeInToDB = async () => {
   const result = await Bike.find();
   if (result?.length === 0) {
-    throw new Error("No Data Found");
+    throw new AppError(httpStatus.NOT_FOUND,"No Data Found");
   }
   return result;
 };
@@ -21,7 +23,7 @@ const findAllBikeInToDB = async () => {
 const updatedBikeFromDB = async (id: string, payload: TBike) => {
   const bike = await Bike.findById(id);
   if (!bike) {
-    throw new Error("Bike id is not valid");
+    throw new AppError(httpStatus.BAD_REQUEST, "Bike id is not valid");
   }
 
   const result = await Bike.findByIdAndUpdate(id, payload, { new: true });
@@ -32,7 +34,7 @@ const updatedBikeFromDB = async (id: string, payload: TBike) => {
 const deletedBikeInToDB = async (id: string) => {
   const bike = await Bike.findById(id);
   if (!bike) {
-    throw new Error("Bike id is not valid");
+    throw new AppError(httpStatus.BAD_REQUEST, "Bike id is not valid");
   }
 
   const result = await Bike.findByIdAndUpdate(

@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
-import mongoose, { Types } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 import { TBookingPayload } from "./booking.interface";
 import { User } from "../user/user.model";
 import { Bike } from "../bike/bike.model";
@@ -58,10 +58,14 @@ const updateReurnBikeFromDB = async (id: string) => {
     if (!booking) {
       throw new Error("Your Booking not found !");
     }
+    const isReturn = booking?.isReturned;
+    if (isReturn) {
+      throw new Error(`This bike already retured !`);
+    }
 
-    const bikeId = booking?.bikeId;
+    const bikeId = booking?.bikeId?._id;
     const updateBikeAvailabe = await Bike.findByIdAndUpdate(
-      { _id: bikeId },
+      bikeId,
       { isAvailable: true },
       { session }
     );
@@ -71,17 +75,9 @@ const updateReurnBikeFromDB = async (id: string) => {
     const startTime = new Date(timeFormat).getTime() / (1000 * 60 * 60);
     const returnTime = new Date().getTime() / (1000 * 60 * 60);
 
-    // console.log({ timeFormat });
-    // console.log({ startTime });
-    // console.log({ returnTime });
-    // console.log(returnTime - startTime);
-
     const bike = booking?.bikeId as TBike; // Type assertion
     const price = bike?.pricePerHour;
-    // console.log({ price });
     const totalCost = ((returnTime - startTime) * price).toFixed(2);
-    // totalCost: 1834.0212199998787;
-    // console.log({ totalCost });
 
     // booking time, price and isReturn updated
     const updateRentalsBikeReturn = await Booking.findByIdAndUpdate(
@@ -91,7 +87,7 @@ const updateReurnBikeFromDB = async (id: string) => {
         totalCost: totalCost,
         isReturned: true,
       },
-      { session }
+      { new: true, session }
     );
 
     await session.commitTransaction();

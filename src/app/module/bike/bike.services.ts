@@ -14,7 +14,7 @@ const createBikeInToDB = async (payload: TBike) => {
 const findAllBikeInToDB = async () => {
   const result = await Bike.find();
   if (result?.length === 0) {
-    throw new AppError(httpStatus.NOT_FOUND,"No Data Found");
+    throw new AppError(httpStatus.NOT_FOUND, "No Data Found");
   }
   return result;
 };

@@ -73,7 +73,7 @@ userSchema.pre("save", async function () {
   const user = this as TUser;
   const result = await User.findOne({ email: user?.email });
   if (result) {
-    throw new AppError(httpStatus.BAD_REQUEST,"This Email already exists !");
+    // throw new AppError(httpStatus.BAD_REQUEST,"This Email already exists !");
   }
 });
 

@@ -3,6 +3,7 @@ import { TErrorSources } from "../interface/error";
 import config from "../config";
 import { ZodError } from "zod";
 import handleZodError from "../errors/handleZodError";
+import handleDuplicateError from "../errors/handleDuplicateError";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let message = err?.message || "Something went wrong";
@@ -16,6 +17,11 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
+    statusCode = simplifiedError?.statusCode;
+    errorSource = simplifiedError?.errorSource;
+    message = simplifiedError?.message;
+  } else if (err.errorResponse.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
     statusCode = simplifiedError?.statusCode;
     errorSource = simplifiedError?.errorSource;
     message = simplifiedError?.message;

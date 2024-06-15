@@ -7,7 +7,7 @@ let server: Server;
 async function main() {
   try {
     const url = config.db_url as string;
-    const port = config.port;
+    const port = process.env?.PORT || config?.port;
     await mongoose.connect(url, { dbName: "Bike-rental-service" });
 
     // app listen

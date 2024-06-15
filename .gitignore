@@ -93,3 +93,4 @@ libpeerconnection.log
 *.p12
 # Styled Components
 styled-components/
+.vercel
